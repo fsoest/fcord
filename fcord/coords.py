@@ -15,12 +15,15 @@ class Coordinate:
 
 
 class CartesianCoord(Coordinate):
-    def __init__(self, x: float, y: float, z: float):
+    def __init__(self, x: float | int, y: float | int, z: float | int):
         super().__init__()
-        self.x = x
-        self.y = y
-        self.z = z
-        self.r = [x, y, z]
+        self.x = float(x)
+        self.y = float(y)
+        self.z = float(z)
+
+    @property
+    def r(self) -> list[float]:
+        return [self.x, self.y, self.z]
 
     def __repr__(self) -> str:
         return f"CartesianCoord({self.x}, {self.y}, {self.z})"
@@ -39,11 +42,14 @@ class CartesianCoord(Coordinate):
 
 
 class GPSCoord:
-    def __init__(self, lat: float, lon: float, alt: float):
-        self.lat = lat
-        self.lon = lon
-        self.alt = alt
-        self.r = [lat, lon, alt]
+    def __init__(self, lat: float | int, lon: float | int, alt: float | int):
+        self.lat = float(lat)
+        self.lon = float(lon)
+        self.alt = float(alt)
+
+    @property
+    def r(self) -> list[float]:
+        return [self.lat, self.lon, self.alt]
 
     def __repr__(self) -> str:
         return f"GPSCoord({self.lat}, {self.lon}, {self.alt})"
@@ -68,13 +74,16 @@ class GPSCoord:
 
 
 class ENUCoord(Coordinate):
-    def __init__(self, e: float, n: float, u: float, global_origin: GPSCoord = None):
+    def __init__(self, e: float | int, n: float | int, u: float | int, global_origin: GPSCoord = None):
         super().__init__()
         self.global_origin = global_origin
-        self.e = e
-        self.n = n
-        self.u = u
-        self.r = [e, n, u]
+        self.e = float(e)
+        self.n = float(n)
+        self.u = float(u)
+
+    @property
+    def r(self) -> list[float]:
+        return [self.e, self.n, self.u]
 
     def __repr__(self) -> str:
         return f"ENUCoord({self.e}, {self.n}, {self.u})"
@@ -100,13 +109,16 @@ class ENUCoord(Coordinate):
 
 
 class NEDCoord(Coordinate):
-    def __init__(self, n: float, e: float, d: float, global_origin: GPSCoord = None):
+    def __init__(self, n: float | int, e: float | int, d: float | int, global_origin: GPSCoord = None):
         super().__init__()
         self.global_origin = global_origin
-        self.n = n
-        self.e = e
-        self.d = d
-        self.r = [n, e, d]
+        self.n = float(n)
+        self.e = float(e)
+        self.d = float(d)
+
+    @property
+    def r(self) -> list[float]:
+        return [self.n, self.e, self.d]
 
     def __repr__(self) -> str:
         return f"NEDCoord({self.n}, {self.e}, {self.d})"
