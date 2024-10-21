@@ -5,13 +5,9 @@ import math
 class Coordinate:
     def __init__(self):
         self.r = []
-
-    def __len__(self) -> float:
-        """Returns the l2 norm of the vector."""
-        return sum([x ** 2 for x in self.r]) ** 0.5
-
+        
     def l2_norm(self) -> float:
-        return len(self)
+        return sum([x ** 2 for x in self.r]) ** 0.5
 
 
 class CartesianCoord(Coordinate):
