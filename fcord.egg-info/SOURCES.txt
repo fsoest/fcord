@@ -1,0 +1,8 @@
+LICENSE
+setup.py
+fcord/__init__.py
+fcord/coords.py
+fcord.egg-info/PKG-INFO
+fcord.egg-info/SOURCES.txt
+fcord.egg-info/dependency_links.txt
+fcord.egg-info/top_level.txt
