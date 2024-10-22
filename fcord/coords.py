@@ -1,10 +1,12 @@
 from typing import Self
 import math
 
+from px4_interfaces.msg import Ned
+
 
 class Coordinate:
     def __init__(self):
-        self.r = []
+        pass
         
     def l2_norm(self) -> float:
         return sum([x ** 2 for x in self.r]) ** 0.5
@@ -105,12 +107,13 @@ class ENUCoord(Coordinate):
 
 
 class NEDCoord(Coordinate):
-    def __init__(self, n: float | int, e: float | int, d: float | int, global_origin: GPSCoord = None):
+    def __init__(self, n: float | int, e: float | int, d: float | int,  yaw: float = "nan", global_origin: GPSCoord = None):
         super().__init__()
         self.global_origin = global_origin
         self.n = float(n)
         self.e = float(e)
         self.d = float(d)
+        self.yaw = float(yaw)
 
     @property
     def r(self) -> list[float]:
@@ -137,3 +140,15 @@ class NEDCoord(Coordinate):
             return self - other.to_ned()
         else:
             raise ValueError(f"Cannot subtract NEDCoord from {type(other)}")
+
+    def to_msg(self) -> Ned:
+        msg = Ned()
+        msg.n = self.n
+        msg.e = self.e
+        msg.d = self.d
+        msg.yaw = self.yaw
+        return msg
+
+    @staticmethod
+    def from_msg(msg: Ned, global_origin: GPSCoord = None) -> "NEDCoord":
+        return NEDCoord(msg.n, msg.e, msg.d, msg.yaw, global_origin)
