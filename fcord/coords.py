@@ -11,6 +11,9 @@ class Coordinate:
     def l2_norm(self) -> float:
         return sum([x ** 2 for x in self.r]) ** 0.5
 
+    def horizontal_norm(self) -> float:
+        return sum([x ** 2 for x in self.r[:2]]) ** 0.5
+
 
 class CartesianCoord(Coordinate):
     def __init__(self, x: float | int, y: float | int, z: float | int):
