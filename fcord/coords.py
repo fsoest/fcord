@@ -11,7 +11,7 @@ class Coordinate:
     def l2_norm(self) -> float:
         return sum([x ** 2 for x in self.r]) ** 0.5
 
-    def horizontal_norm(self) -> float:
+    def horizontal_distance(self) -> float:
         return sum([x ** 2 for x in self.r[:2]]) ** 0.5
 
 
