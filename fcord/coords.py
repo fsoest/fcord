@@ -1,6 +1,6 @@
 from typing import Self
 import math
-
+Self = None
 from px4_interfaces.msg import Ned
 
 
