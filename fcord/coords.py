@@ -1,13 +1,16 @@
-from typing import Self
 import math
+from px4_interfaces.msg import Ned
 
 
 class Coordinate:
     def __init__(self):
-        self.r = []
+        pass
         
     def l2_norm(self) -> float:
         return sum([x ** 2 for x in self.r]) ** 0.5
+
+    def horizontal_distance(self) -> float:
+        return sum([x ** 2 for x in self.r[:2]]) ** 0.5
 
 
 class CartesianCoord(Coordinate):
@@ -65,7 +68,7 @@ class GPSCoord:
         z = (N * (1 - e2) + self.alt) * math.sin(lat_rad)
         return CartesianCoord(x, y, z)
 
-    def distance(self, other: Self) -> float:
+    def distance(self, other) -> float:
         return (self.ecef() - other.ecef()).l2_norm()
 
 
@@ -87,7 +90,7 @@ class ENUCoord(Coordinate):
     def to_ned(self) -> "NEDCoord":
         return NEDCoord(self.n, self.e, -self.u, self.global_origin)
 
-    def __add__(self, other) -> Self:
+    def __add__(self, other):
         if isinstance(other, ENUCoord):
             return ENUCoord(self.e + other.e, self.n + other.n, self.u + other.u)
         elif isinstance(other, NEDCoord):
@@ -95,7 +98,7 @@ class ENUCoord(Coordinate):
         else:
             raise ValueError(f"Cannot add ENUCoord to {type(other)}")
 
-    def __sub__(self, other) -> Self:
+    def __sub__(self, other):
         if isinstance(other, ENUCoord):
             return ENUCoord(self.e - other.e, self.n - other.n, self.u - other.u)
         elif isinstance(other, NEDCoord):
@@ -105,12 +108,13 @@ class ENUCoord(Coordinate):
 
 
 class NEDCoord(Coordinate):
-    def __init__(self, n: float | int, e: float | int, d: float | int, global_origin: GPSCoord = None):
+    def __init__(self, n: float | int, e: float | int, d: float | int,  yaw: float = "nan", global_origin: GPSCoord = None):
         super().__init__()
         self.global_origin = global_origin
         self.n = float(n)
         self.e = float(e)
         self.d = float(d)
+        self.yaw = float(yaw)
 
     @property
     def r(self) -> list[float]:
@@ -122,7 +126,7 @@ class NEDCoord(Coordinate):
     def to_enu(self) -> ENUCoord:
         return ENUCoord(self.e, self.n, -self.d, self.global_origin)
 
-    def __add__(self, other) -> Self:
+    def __add__(self, other):
         if isinstance(other, NEDCoord):
             return NEDCoord(self.n + other.n, self.e + other.e, self.d + other.d)
         elif isinstance(other, ENUCoord):
@@ -130,10 +134,22 @@ class NEDCoord(Coordinate):
         else:
             raise ValueError(f"Cannot add NEDCoord to {type(other)}")
 
-    def __sub__(self, other) -> Self:
+    def __sub__(self, other):
         if isinstance(other, NEDCoord):
             return NEDCoord(self.n - other.n, self.e - other.e, self.d - other.d)
         elif isinstance(other, ENUCoord):
             return self - other.to_ned()
         else:
             raise ValueError(f"Cannot subtract NEDCoord from {type(other)}")
+
+    def to_msg(self) -> Ned:
+        msg = Ned()
+        msg.n = self.n
+        msg.e = self.e
+        msg.d = self.d
+        msg.yaw = self.yaw
+        return msg
+
+    @staticmethod
+    def from_msg(msg: Ned, global_origin: GPSCoord = None) -> "NEDCoord":
+        return NEDCoord(msg.n, msg.e, msg.d, msg.yaw, global_origin)
