@@ -1,5 +1,5 @@
 import math
-from px4_interfaces.msg import Ned
+from px4_interfaces.msg import Ned, Gps
 
 
 class Coordinate:
@@ -41,10 +41,11 @@ class CartesianCoord(Coordinate):
 
 
 class GPSCoord:
-    def __init__(self, lat: float | int, lon: float | int, alt: float | int):
+    def __init__(self, lat: float | int, lon: float | int, alt: float | int, yaw: float = "nan"):
         self.lat = float(lat)
         self.lon = float(lon)
         self.alt = float(alt)
+        self.yaw = float(yaw)
 
     @property
     def r(self) -> list[float]:
@@ -71,14 +72,27 @@ class GPSCoord:
     def distance(self, other) -> float:
         return (self.ecef() - other.ecef()).l2_norm()
 
+    def to_msg(self) -> Gps:
+        msg = Gps()
+        msg.lat = self.lat
+        msg.lon = self.lon
+        msg.alt = self.alt
+        msg.yaw = self.yaw
+        return msg
+
+    @staticmethod
+    def from_msg(msg: Gps) -> "GPSCoord":
+        return GPSCoord(msg.lat, msg.lon, msg.alt, msg.yaw)
+
 
 class ENUCoord(Coordinate):
-    def __init__(self, e: float | int, n: float | int, u: float | int, global_origin: GPSCoord = None):
+    def __init__(self, e: float | int, n: float | int, u: float | int, yaw: float = "nan", global_origin: GPSCoord = None):
         super().__init__()
         self.global_origin = global_origin
         self.e = float(e)
         self.n = float(n)
         self.u = float(u)
+        self.yaw = float(yaw)
 
     @property
     def r(self) -> list[float]:
