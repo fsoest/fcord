@@ -82,7 +82,10 @@ class GPSCoord:
 
     @staticmethod
     def from_msg(msg: Gps) -> "GPSCoord":
-        return GPSCoord(msg.lat, msg.lon, msg.alt, msg.yaw)
+        if hasattr(msg, "yaw"):
+            return GPSCoord(msg.lat, msg.lon, msg.alt, msg.yaw)
+        else:
+            return GPSCoord(msg.lat, msg.lon, msg.alt)
 
 
 class ENUCoord(Coordinate):
