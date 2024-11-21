@@ -142,6 +142,10 @@ class NEDCoord(Coordinate):
     def to_enu(self) -> ENUCoord:
         return ENUCoord(self.e, self.n, -self.d)
 
+    def to_gps(self, ref: GPSCoord) -> GPSCoord:
+        lat, lon, alt = ned2lla(self.r, ref.lat, ref.lon, ref.alt)
+        return GPSCoord(lat, lon, alt)
+
     def __add__(self, other):
         if isinstance(other, NEDCoord):
             return NEDCoord(self.n + other.n, self.e + other.e, self.d + other.d)
