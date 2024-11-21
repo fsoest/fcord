@@ -1,4 +1,5 @@
 import math
+from navpy import ned2lla
 from px4_interfaces.msg import Ned, Gps
 
 
@@ -89,9 +90,8 @@ class GPSCoord:
 
 
 class ENUCoord(Coordinate):
-    def __init__(self, e: float | int, n: float | int, u: float | int, yaw: float = "nan", global_origin: GPSCoord = None):
+    def __init__(self, e: float | int, n: float | int, u: float | int, yaw: float = "nan"):
         super().__init__()
-        self.global_origin = global_origin
         self.e = float(e)
         self.n = float(n)
         self.u = float(u)
@@ -105,7 +105,7 @@ class ENUCoord(Coordinate):
         return f"ENUCoord({self.e}, {self.n}, {self.u})"
 
     def to_ned(self) -> "NEDCoord":
-        return NEDCoord(self.n, self.e, -self.u, self.global_origin)
+        return NEDCoord(self.n, self.e, -self.u)
 
     def __add__(self, other):
         if isinstance(other, ENUCoord):
@@ -125,9 +125,8 @@ class ENUCoord(Coordinate):
 
 
 class NEDCoord(Coordinate):
-    def __init__(self, n: float | int, e: float | int, d: float | int,  yaw: float = "nan", global_origin: GPSCoord = None):
+    def __init__(self, n: float | int, e: float | int, d: float | int,  yaw: float = "nan"):
         super().__init__()
-        self.global_origin = global_origin
         self.n = float(n)
         self.e = float(e)
         self.d = float(d)
@@ -141,7 +140,7 @@ class NEDCoord(Coordinate):
         return f"NEDCoord({self.n}, {self.e}, {self.d})"
 
     def to_enu(self) -> ENUCoord:
-        return ENUCoord(self.e, self.n, -self.d, self.global_origin)
+        return ENUCoord(self.e, self.n, -self.d)
 
     def __add__(self, other):
         if isinstance(other, NEDCoord):
@@ -168,5 +167,5 @@ class NEDCoord(Coordinate):
         return msg
 
     @staticmethod
-    def from_msg(msg: Ned, global_origin: GPSCoord = None) -> "NEDCoord":
-        return NEDCoord(msg.n, msg.e, msg.d, msg.yaw, global_origin)
+    def from_msg(msg: Ned) -> "NEDCoord":
+        return NEDCoord(msg.n, msg.e, msg.d, msg.yaw)
