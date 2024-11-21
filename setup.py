@@ -4,7 +4,7 @@ setup(
    name='fcord',
    version='0.1',
    packages=find_packages(),
-   install_requires=[],
+   install_requires=["navpy>=1.0"],
    description='A short description of your package',
    # long_description=open('README.md').read(),
    # long_description_content_type='text/markdown',
