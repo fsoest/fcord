@@ -13,6 +13,9 @@ class Coordinate:
     def horizontal_distance(self) -> float:
         return sum([x ** 2 for x in self.r[:2]]) ** 0.5
 
+    def vertical_distance(self) -> float:
+        return abs(self.r[2])
+
 
 class CartesianCoord(Coordinate):
     def __init__(self, x: float | int, y: float | int, z: float | int):
