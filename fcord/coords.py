@@ -1,5 +1,5 @@
 import math
-from navpy import ned2lla
+from navpy import ned2lla, lla2ned
 from px4_interfaces.msg import Ned, Gps
 
 
@@ -74,6 +74,13 @@ class GPSCoord:
         y = (N + self.alt) * math.cos(lat_rad) * math.sin(lon_rad)
         z = (N * (1 - e2) + self.alt) * math.sin(lat_rad)
         return CartesianCoord(x, y, z)
+
+    def to_ned(self, reference: "GPSCoord") -> "NEDCoord":
+        """Converts GPS coordinates to NED coordinates relative to a reference point."""
+        ned_coords = lla2ned(
+            self.lat, self.lon, self.alt, reference.lat, reference.lon, reference.alt
+        )
+        return NEDCoord(ned_coords[0], ned_coords[1], ned_coords[2], self.yaw)
 
     def distance(self, other) -> float:
         return (self.ecef() - other.ecef()).l2_norm()
