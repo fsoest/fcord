@@ -6,12 +6,12 @@ from px4_interfaces.msg import Ned, Gps
 class Coordinate:
     def __init__(self):
         pass
-        
+
     def l2_norm(self) -> float:
-        return sum([x ** 2 for x in self.r]) ** 0.5
+        return sum([x**2 for x in self.r]) ** 0.5
 
     def horizontal_distance(self) -> float:
-        return sum([x ** 2 for x in self.r[:2]]) ** 0.5
+        return sum([x**2 for x in self.r[:2]]) ** 0.5
 
     def vertical_distance(self) -> float:
         return abs(self.r[2])
@@ -45,7 +45,9 @@ class CartesianCoord(Coordinate):
 
 
 class GPSCoord:
-    def __init__(self, lat: float | int, lon: float | int, alt: float | int, yaw: float = "nan"):
+    def __init__(
+        self, lat: float | int, lon: float | int, alt: float | int, yaw: float = "nan"
+    ):
         self.lat = float(lat)
         self.lon = float(lon)
         self.alt = float(alt)
@@ -63,7 +65,7 @@ class GPSCoord:
         a = 6378137.0  # Semi-major axis
         f = 1 / 298.257223563  # Flattening
         b = a * (1 - f)
-        e2 = (a ** 2 - b ** 2) / a ** 2  # Square of eccentricity
+        e2 = (a**2 - b**2) / a**2  # Square of eccentricity
         lat_rad = math.radians(self.lat)
         lon_rad = math.radians(self.lon)
 
@@ -93,7 +95,9 @@ class GPSCoord:
 
 
 class ENUCoord(Coordinate):
-    def __init__(self, e: float | int, n: float | int, u: float | int, yaw: float = "nan"):
+    def __init__(
+        self, e: float | int, n: float | int, u: float | int, yaw: float = "nan"
+    ):
         super().__init__()
         self.e = float(e)
         self.n = float(n)
@@ -128,7 +132,9 @@ class ENUCoord(Coordinate):
 
 
 class NEDCoord(Coordinate):
-    def __init__(self, n: float | int, e: float | int, d: float | int,  yaw: float = "nan"):
+    def __init__(
+        self, n: float | int, e: float | int, d: float | int, yaw: float = "nan"
+    ):
         super().__init__()
         self.n = float(n)
         self.e = float(e)
